@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Павел Фазлиев](https://up.htmlacademy.ru/ecmascript/16/user/1311329).
-* Наставник: `Неизвестно`.
+* Наставник: [Артём Рудов](https://htmlacademy.ru/profile/artrudov).
 
 ---
 
