@@ -1,6 +1,6 @@
 # Проект «Большое путешествие»
 
-* Студент: [Павел Фазлиев](https://https://htmlacademy.ru/profile/meow_or).
+* Студент: [Павел Фазлиев](https://htmlacademy.ru/profile/meow_or).
 * Наставник: [Артём Рудов](https://htmlacademy.ru/profile/artrudov).
 
 ---
