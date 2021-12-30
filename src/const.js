@@ -16,4 +16,16 @@ const CITIES = [
   'Budapest',
 ];
 
-export { RANDOM_TEXT, CITIES };
+const TYPES = [
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant',
+];
+
+export { RANDOM_TEXT, CITIES, TYPES };

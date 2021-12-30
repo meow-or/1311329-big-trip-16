@@ -2,7 +2,7 @@ const createSortItemTemplate = (filter, isChecked) => {
   const { name } = filter;
 
   return `<div class="trip-sort__item  trip-sort__item--${name}">
-              <input id="sort-${name}"
+            <input id="sort-${name}"
               class="trip-sort__input  visually-hidden"
               type="radio"
               name="trip-sort"

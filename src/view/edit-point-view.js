@@ -1,7 +1,12 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils.js';
+import { TYPES } from '../const.js';
 
 let offersHeaderClass;
+
+const dateFormat = {
+  dateAndTime: 'DD/MM/YYYY HH:mm',
+};
 
 const createChooseDestinationTemplate = (destination) =>
   `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
@@ -11,49 +16,70 @@ const createChooseDestinationTemplate = (destination) =>
     <option value="Chamonix"></option>
   </datalist>`;
 
-const createTypeIconTemplate = (type) =>
-  `<img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">`;
+const createTypeIconTemplate = (type) => (
+  `<img class="event__type-icon"
+    width="17"
+    height="17"
+    src="img/icons/${type}.png"
+    alt="Event type icon">`
+);
 
-const createEditPointDateTemplate = (dateFrom, dateTo) =>
-  `<label class="visually-hidden" for="event-start-time-1">From</label>
-  <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(
-    dateFrom
-  ).format('DD/MM/YYYY HH:mm')}">
-  &mdash;
-  <label class="visually-hidden" for="event-end-time-1">To</label>
-  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(
-    dateTo
-  ).format('DD/MM/YYYY HH:mm')}">`;
+const createEditPointDateTemplate = (dateFrom, dateTo) => {
 
-const createPriceTemplate = (basePrice) =>
+  const startTime = dayjs(dateFrom).format(dateFormat.dateAndTime);
+  const finishTime = dayjs(dateTo).format(dateFormat.dateAndTime);
+
+  return `<label class="visually-hidden" for="event-start-time-1">From</label>
+
+          <input class="event__input  event__input--time"
+            id="event-start-time-1"
+            type="text"
+            name="event-start-time"
+            value="${startTime}">
+            &mdash;
+          <label class="visually-hidden" for="event-end-time-1">To</label>
+
+          <input class="event__input  event__input--time"
+            id="event-end-time-1"
+            type="text"
+            name="event-end-time"
+            value="${finishTime}">`;
+};
+
+const createPriceTemplate = (basePrice) => (
   `<label class="event__label" for="event-price-1">
-  <span class="visually-hidden">Price</span>
-  &euro;
+    <span class="visually-hidden">Price</span>
+    &euro;
   </label>
-  <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">`;
 
-const createCurrentPointTypeTemplate = (type) =>
+  <input class="event__input  event__input--price"
+    id="event-price-1"
+    type="text"
+    name="event-price"
+    value="${basePrice}">`
+);
+
+const createCurrentPointTypeTemplate = (type) => (
   `<label class="event__label  event__type-output" for="event-destination-1">
     ${type}
-  </label>`;
+  </label>`);
 
-const createEventTypeTemplate = (type) => {
+const createEventTypeTemplate = (type) =>
 
-  const types = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+  TYPES.map((pointType) =>
+    `<div class="event__type-item">
+      <input id="event-type-${pointType}-1"
+        class="event__type-input  visually-hidden"
+        type="radio"
+        name="event-type"
+        value="${pointType}"
+        ${type === pointType ? 'checked' : ''}>
 
-  return types.map((pointType) => `<div class="event__type-item">
-            <input id="event-type-${pointType}-1"
-            class="event__type-input  visually-hidden"
-            type="radio"
-            name="event-type"
-            value="${pointType}"
-            ${type === pointType ? 'checked' : ''}>
-
-            <label
-              class="event__type-label  event__type-label--${pointType}"
-              for="event-type-${pointType}-1">${pointType}</label>
-          </div>`).join('');
-};
+      <label
+        class="event__type-label  event__type-label--${pointType}"
+        for="event-type-${pointType}-1">${pointType}
+      </label>
+    </div>`).join('');
 
 const createOffersTemplate = (offers) => {
 
@@ -77,10 +103,16 @@ const createOffersTemplate = (offers) => {
       const textNode = document.createTextNode(
         `<div class="event__available-offers">
           <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-1" type="checkbox" name="event-offer-${offer.title}" ${optionSelected}>
-            <label class="event__offer-label" for="event-offer-${offer.title}-1">
+            <input class="event__offer-checkbox  visually-hidden"
+            id="event-offer-${offer.title}-1"
+            type="checkbox"
+            name="event-offer-${offer.title}"
+            ${optionSelected}>
+
+            <label class="event__offer-label"
+              for="event-offer-${offer.title}-1">
               <span class="event__offer-title">${offer.title}</span>
-              &plus;&euro;&nbsp;
+                &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
             </label>
           </div>`);
