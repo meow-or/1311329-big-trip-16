@@ -2,7 +2,6 @@ import { createSiteMenuTemplate } from './view/site-menu-view.js';
 import { createFiltersTemplate } from './view/filters-view.js';
 import { createSortTemplate } from './view/sort-view.js';
 import { createContentContainerTemplate } from './view/content-container-view.js';
-//import { createNewPointTemplate } from './view/new-point-view';
 import { createEditPointTemplate } from './view/edit-point-view.js';
 import { createTripPointTemplate } from './view/trip-point-view.js';
 import { renderTemplate, RenderPosition } from './render.js';
@@ -34,7 +33,6 @@ renderTemplate(tripSortElement, createContentContainerTemplate(), RenderPosition
 const pointsContainer = document.querySelector('.trip-events__list');
 
 renderTemplate(pointsContainer, createEditPointTemplate(points[0]), RenderPosition.BEFOREEND);
-//renderTemplate(pointsContainer, createNewPointTemplate(points[0]), RenderPosition.BEFOREEND);
 
 for (let i = 1; i < POINT_COUNT; i++) {
   renderTemplate(

@@ -28,4 +28,8 @@ const TYPES = [
   'restaurant',
 ];
 
-export { RANDOM_TEXT, CITIES, TYPES };
+const dateFormat = {
+  dateAndTime: 'DD/MM/YYYY HH:mm',
+};
+
+export { RANDOM_TEXT, CITIES, TYPES, dateFormat };

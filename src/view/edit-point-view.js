@@ -1,20 +1,20 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils.js';
-import { TYPES } from '../const.js';
+import { TYPES, CITIES, dateFormat } from '../const.js';
 
 let offersHeaderClass;
 
-const dateFormat = {
-  dateAndTime: 'DD/MM/YYYY HH:mm',
-};
-
 const createChooseDestinationTemplate = (destination) =>
-  `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
-  <datalist id="destination-list-1">
-    <option value="Amsterdam"></option>
-    <option value="Geneva"></option>
-    <option value="Chamonix"></option>
-  </datalist>`;
+  `<input class="event__input  event__input--destination"
+    id="event-destination-1"
+    type="text"
+    name="event-destination"
+    value="${destination.name}"
+    list="destination-list-1">`;
+
+const createDestinationListTemplate = () =>
+  CITIES.map((city) =>
+    `<option value="${city}">${city}</option>`).join('');
 
 const createTypeIconTemplate = (type) => (
   `<img class="event__type-icon"
@@ -82,7 +82,6 @@ const createEventTypeTemplate = (type) =>
     </div>`).join('');
 
 const createOffersTemplate = (offers) => {
-
   if (offers.length === 0) {
     offersHeaderClass = 'visually-hidden';
 
@@ -130,7 +129,9 @@ const createOffersTemplate = (offers) => {
   }
 };
 
-const createDestinationDescriptionTemplate = (destination) => `<p class="event__destination-description">${destination.description}</p>`;
+const createDestinationDescriptionTemplate = (destination) => (
+  `<p class="event__destination-description">${destination.description}</p>`
+);
 
 export const createEditPointTemplate = (point = {}) => {
   const {
@@ -143,6 +144,7 @@ export const createEditPointTemplate = (point = {}) => {
   } = point;
 
   const chooseDestinationTemplate = createChooseDestinationTemplate(destination);
+  const destinationListTemplate = createDestinationListTemplate(destination);
   const dateTemplate = createEditPointDateTemplate(dateFrom, dateTo);
   const priceTemplate = createPriceTemplate(basePrice);
   const eventTypeTemplate = createEventTypeTemplate(type);
@@ -172,6 +174,9 @@ export const createEditPointTemplate = (point = {}) => {
           <div class="event__field-group  event__field-group--destination">
             ${currentTypeTemplate}
             ${chooseDestinationTemplate}
+              <datalist id="destination-list-1">
+                ${destinationListTemplate}
+              </datalist>
           </div>
 
           <div class="event__field-group  event__field-group--time">
