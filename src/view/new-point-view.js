@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils.js';
-import { TYPES, CITIES, dateFormat } from '../const.js';
+import { TYPES, CITIES, dateFormat, BLANK_POINT } from '../const.js';
+import { createElement } from '../render.js';
 
 let offersHeaderClass;
 
@@ -18,10 +19,10 @@ const createDestinationListTemplate = () =>
 
 const createTypeIconTemplate = (type) => (
   `<img class="event__type-icon"
-  width="17"
-  height="17"
-  src="img/icons/${type}.png"
-  alt="Event type icon">`
+    width="17"
+    height="17"
+    src="img/icons/${type}.png"
+    alt="Event type icon">`
 );
 
 const createEditPointDateTemplate = (dateFrom, dateTo) => {
@@ -51,11 +52,12 @@ const createPriceTemplate = (basePrice) => (
     <span class="visually-hidden">Price</span>
     &euro;
   </label>
+
   <input class="event__input  event__input--price"
-  id="event-price-1"
-  type="text"
-  name="event-price"
-  value="${basePrice}">`
+    id="event-price-1"
+    type="text"
+    name="event-price"
+    value="${basePrice}">`
 );
 
 const createCurrentPointTypeTemplate = (type) => (
@@ -87,44 +89,27 @@ const createOffersTemplate = (offers) => {
     offersHeaderClass = 'visually-hidden';
 
     return '<h3 class="event__section-title  event__section-title--offers"></h3>';
-
   } else {
     offersHeaderClass = '';
+    const isChecked = Boolean(getRandomInteger(0, 1));
+    const optionSelected = isChecked ? 'checked' : '';
 
-    const fragment = new DocumentFragment();
-
-    offers.forEach((offer) => {
-      const isChecked = Boolean(getRandomInteger(0, 1));
-
-      const optionSelected = isChecked ? 'checked' : '';
-
-      const textNode = document.createTextNode(
-        `<div class="event__available-offers">
-          <div class="event__offer-selector">
+    return offers.map(
+      (offer) =>
+        `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden"
             id="event-offer-${offer.title}-1"
-            type="checkbox" name="event-offer-${offer.title}"
+            type="checkbox"
+            name="event-offer-${offer.title}"
             ${optionSelected}>
 
             <label class="event__offer-label"
               for="event-offer-${offer.title}-1">
               <span class="event__offer-title">${offer.title}</span>
-              &plus;&euro;&nbsp;
+                &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
             </label>
-          </div>`
-      );
-
-      fragment.append(textNode);
-    });
-
-    const newArr = [];
-
-    fragment.childNodes.forEach((node) => {
-      newArr.push(node.nodeValue);
-    });
-
-    return newArr.join('');
+          </div>`).join('');
   }
 };
 
@@ -132,33 +117,17 @@ const createDestinationDescriptionTemplate = (destination) =>
   `<p class="event__destination-description">${destination.description}</p>`;
 
 const createDestinationPhotoTemplate = (destination) => {
-  const fragment = new DocumentFragment();
-
   const { pictures } = destination;
 
-  pictures.forEach((picture) => {
-    const textNode = document.createTextNode(
-      `<img class="event__photo" src="${picture.src}" alt="${picture.description}"></img>`
-    );
-    fragment.append(textNode);
-  });
-  const newArr = [];
-
-  fragment.childNodes.forEach((node) => {
-    newArr.push(node.nodeValue);
-  });
-  return newArr.join('');
+  return pictures.map(
+    (picture) =>
+      `<img class="event__photo"
+        src="${picture.src}"
+        alt="${picture.description}"></img>`).join('');
 };
 
-export const createNewPointTemplate = (point = {}) => {
-  const {
-    basePrice = 1,
-    dateFrom = null,
-    dateTo = null,
-    destination = '',
-    offers,
-    type,
-  } = point;
+const createNewPointTemplate = (point = {}) => {
+  const { basePrice, dateFrom , dateTo, destination, offers, type } = point;
 
   const chooseDestinationTemplate = createChooseDestinationTemplate(destination);
   const destinationListTemplate = createDestinationListTemplate(destination);
@@ -172,59 +141,85 @@ export const createNewPointTemplate = (point = {}) => {
   const destinationPhotoTemplate = createDestinationPhotoTemplate(destination);
 
   return `<li class="trip-events__item">
-      <form class="event event--edit" action="#" method="post">
-        <header class="event__header">
-          <div class="event__type-wrapper">
-            <label class="event__type  event__type-btn" for="event-type-toggle-1">
-              <span class="visually-hidden">Choose event type</span>
-              ${typeIconTemplate}
-            </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+            <form class="event event--edit" action="#" method="post">
+              <header class="event__header">
+                <div class="event__type-wrapper">
+                  <label class="event__type  event__type-btn" for="event-type-toggle-1">
+                    <span class="visually-hidden">Choose event type</span>
+                    ${typeIconTemplate}
+                  </label>
+                  <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
-            <div class="event__type-list">
-              <fieldset class="event__type-group">
-                <legend class="visually-hidden">Event type</legend>
-                ${eventTypeTemplate}
-              </fieldset>
-            </div>
-          </div>
+                  <div class="event__type-list">
+                    <fieldset class="event__type-group">
+                      <legend class="visually-hidden">Event type</legend>
+                      ${eventTypeTemplate}
+                    </fieldset>
+                  </div>
+                </div>
 
-          <div class="event__field-group  event__field-group--destination">
-            ${currentTypeTemplate}
-            ${chooseDestinationTemplate}
-              <datalist id="destination-list-1">
-                ${destinationListTemplate}
-              </datalist>
-          </div>
+                <div class="event__field-group  event__field-group--destination">
+                  ${currentTypeTemplate}
+                  ${chooseDestinationTemplate}
+                    <datalist id="destination-list-1">
+                      ${destinationListTemplate}
+                    </datalist>
+                </div>
 
-          <div class="event__field-group  event__field-group--time">
-            ${dateTemplate}
-          </div>
+                <div class="event__field-group  event__field-group--time">
+                  ${dateTemplate}
+                </div>
 
-          <div class="event__field-group  event__field-group--price">
-            ${priceTemplate}
-          </div>
+                <div class="event__field-group  event__field-group--price">
+                  ${priceTemplate}
+                </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+                <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+                <button class="event__reset-btn" type="reset">Delete</button>
 
-        </header>
-        <section class="event__details">
-          <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers ${offersHeaderClass}">Offers</h3>
-          ${offersTemplate}
-          </section>
-          <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            ${destinationDescriptionTemplate}
-            <div class="event__photos-container">
-              <div class="event__photos-tape">
-                ${destinationPhotoTemplate}
-              </div>
-            </div>
-          </section>
-        </section>
-      </form>
-    </li>`;
+              </header>
+              <section class="event__details">
+                <section class="event__section  event__section--offers">
+                <h3 class="event__section-title  event__section-title--offers ${offersHeaderClass}">Offers</h3>
+                <div class="event__available-offers">
+                  ${offersTemplate}
+                </div>
+                </section>
+                <section class="event__section  event__section--destination">
+                  <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+                  ${destinationDescriptionTemplate}
+                  <div class="event__photos-container">
+                    <div class="event__photos-tape">
+                      ${destinationPhotoTemplate}
+                    </div>
+                  </div>
+                </section>
+              </section>
+            </form>
+          </li>`;
 };
 
+export default class NewPointView {
+  #element = null;
+  #point = null;
+
+  constructor(point = BLANK_POINT) {
+    this.#point = point;
+  }
+
+  get element() {
+    if(!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template () {
+    return createNewPointTemplate(this.#point);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

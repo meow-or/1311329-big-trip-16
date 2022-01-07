@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { createElement } from '../render';
 
 const HOUR = 3600000;
 const DAY = 86400000;
@@ -6,30 +7,18 @@ const DAY = 86400000;
 const createPointOfferTemplate = (offers) => {
   if (offers.length === 0) {
     return '';
+
   } else {
-    const fragment = new DocumentFragment();
-
-    offers.forEach((offer) => {
-      const textNode = document.createTextNode(`<li class="event__offer">
-        <span class="event__offer-title">${offer.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
-      </li>`);
-
-      fragment.append(textNode);
-    });
-
-    const newArr = [];
-
-    fragment.childNodes.forEach((node) => {
-      newArr.push(node.nodeValue);
-    });
-
-    return newArr.join('');
+    return offers.map(
+      (offer) => `<li class="event__offer">
+                    <span class="event__offer-title">${offer.title}</span>
+                    &plus;&euro;&nbsp;
+                    <span class="event__offer-price">${offer.price}</span>
+                  </li>`).join('');
   }
 };
 
-export const createTripPointTemplate = (point) => {
+const createTripPointTemplate = (point) => {
   const { basePrice, dateFrom, dateTo, destination, isFavorite, offers, type } = point;
 
   const dateStart = dayjs(dateFrom).format('D MMM');
@@ -101,3 +90,28 @@ export const createTripPointTemplate = (point) => {
             </div>
           </li>`;
 };
+
+export default class PointView {
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
+  }
+
+  get element() {
+    if(!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createTripPointTemplate(this.#point);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

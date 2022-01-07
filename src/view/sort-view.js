@@ -1,3 +1,5 @@
+import { createElement } from '../render';
+
 const createSortItemTemplate = (filter, isChecked) => {
   const { name } = filter;
 
@@ -12,7 +14,7 @@ const createSortItemTemplate = (filter, isChecked) => {
           </div>`;
 };
 
-export const createSortTemplate = (sortItems) => {
+const createSortTemplate = (sortItems) => {
   const sortItemsTemplate = sortItems
     .map((sortfilter, index) => createSortItemTemplate(sortfilter, index === 0))
     .join('');
@@ -22,4 +24,27 @@ export const createSortTemplate = (sortItems) => {
           </form>`;
 };
 
+export default class SortView {
+  #element = null;
+  #sortfilters = null;
 
+  constructor(sortfilters) {
+    this.#sortfilters = sortfilters;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createSortTemplate(this.#sortfilters);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
