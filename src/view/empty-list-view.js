@@ -9,9 +9,11 @@ const noEventsMessage = {
 const createEmptyListTemplate = (filterInputs) => {
   const checkedInput = filterInputs.find((input) => input.hasAttribute('checked'));
 
-  return `<p class="trip-events__msg">
-            ${noEventsMessage[checkedInput.value]}
-          </p>`;
+  return (
+    `<p class="trip-events__msg">
+      ${noEventsMessage[checkedInput.value]}
+    </p>`
+  );
 };
 
 export default class EmptyListView {

@@ -29,7 +29,7 @@ const TYPES = [
 ];
 
 const BLANK_POINT = {
-  basePrice: '',
+  basePrice: 1,
   dateFrom: null,
   dateTo: null,
   destination: '',

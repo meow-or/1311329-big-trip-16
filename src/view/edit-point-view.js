@@ -1,17 +1,19 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils.js';
-import { TYPES, CITIES, dateFormat, BLANK_POINT } from '../const.js';
+import { TYPES, CITIES, dateFormat } from '../const.js';
 import { createElement } from '../render.js';
 
 let offersHeaderClass;
 
-const createChooseDestinationTemplate = (destination) =>
+const createChooseDestinationTemplate = (destination) => (
   `<input class="event__input  event__input--destination"
     id="event-destination-1"
     type="text"
     name="event-destination"
     value="${destination.name}"
-    list="destination-list-1">`;
+    list="destination-list-1"
+  >`
+);
 
 const createDestinationListTemplate = () =>
   CITIES.map((city) =>
@@ -22,7 +24,8 @@ const createTypeIconTemplate = (type) => (
     width="17"
     height="17"
     src="img/icons/${type}.png"
-    alt="Event type icon">`
+    alt="Event type icon"
+  >`
 );
 
 const createEditPointDateTemplate = (dateFrom, dateTo) => {
@@ -30,21 +33,24 @@ const createEditPointDateTemplate = (dateFrom, dateTo) => {
   const startTime = dayjs(dateFrom).format(dateFormat.dateAndTime);
   const finishTime = dayjs(dateTo).format(dateFormat.dateAndTime);
 
-  return `<label class="visually-hidden" for="event-start-time-1">From</label>
+  return (
+    `<label class="visually-hidden" for="event-start-time-1">From</label>
 
-          <input class="event__input  event__input--time"
-            id="event-start-time-1"
-            type="text"
-            name="event-start-time"
-            value="${startTime}">
-            &mdash;
-          <label class="visually-hidden" for="event-end-time-1">To</label>
+    <input class="event__input  event__input--time"
+      id="event-start-time-1"
+      type="text"
+      name="event-start-time"
+      value="${startTime}">
+      &mdash;
+    <label class="visually-hidden" for="event-end-time-1">To</label>
 
-          <input class="event__input  event__input--time"
-            id="event-end-time-1"
-            type="text"
-            name="event-end-time"
-            value="${finishTime}">`;
+    <input class="event__input  event__input--time"
+      id="event-end-time-1"
+      type="text"
+      name="event-end-time"
+      value="${finishTime}"
+    >`
+  );
 };
 
 const createPriceTemplate = (basePrice) => (
@@ -57,13 +63,15 @@ const createPriceTemplate = (basePrice) => (
     id="event-price-1"
     type="text"
     name="event-price"
-    value="${basePrice}">`
+    value="${basePrice}"
+  >`
 );
 
 const createCurrentPointTypeTemplate = (type) => (
   `<label class="event__label  event__type-output" for="event-destination-1">
     ${type}
-  </label>`);
+  </label>`
+);
 
 const createEventTypeTemplate = (type) =>
 
@@ -86,7 +94,9 @@ const createOffersTemplate = (offers) => {
   if (offers.length === 0) {
     offersHeaderClass = 'visually-hidden';
 
-    return '<h3 class="event__section-title  event__section-title--offers"></h3>';
+    return (
+      '<h3 class="event__section-title  event__section-title--offers"></h3>'
+    );
 
   } else {
     offersHeaderClass = '';
@@ -117,7 +127,14 @@ const createDestinationDescriptionTemplate = (destination) => (
 );
 
 const createEditPointTemplate = (point = {}) => {
-  const { basePrice, dateFrom, dateTo, destination, offers, type } = point;
+  const {
+    basePrice = 1,
+    dateFrom = null,
+    dateTo = null,
+    destination = '',
+    offers,
+    type,
+  } = point;
 
   const chooseDestinationTemplate = createChooseDestinationTemplate(destination);
   const destinationListTemplate = createDestinationListTemplate(destination);
@@ -129,67 +146,69 @@ const createEditPointTemplate = (point = {}) => {
   const offersTemplate = createOffersTemplate(offers);
   const destinationDescriptionTemplate = createDestinationDescriptionTemplate(destination);
 
-  return `<li class="trip-events__item">
-            <form class="event event--edit" action="#" method="post">
-              <header class="event__header">
-                <div class="event__type-wrapper">
-                  <label class="event__type  event__type-btn" for="event-type-toggle-1">
-                    <span class="visually-hidden">Choose event type</span>
-                    ${typeIconTemplate}
-                  </label>
-                  <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+  return (
+    `<li class="trip-events__item">
+      <form class="event event--edit" action="#" method="post">
+        <header class="event__header">
+          <div class="event__type-wrapper">
+            <label class="event__type  event__type-btn" for="event-type-toggle-1">
+              <span class="visually-hidden">Choose event type</span>
+              ${typeIconTemplate}
+            </label>
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
-                  <div class="event__type-list">
-                    <fieldset class="event__type-group">
-                      <legend class="visually-hidden">Event type</legend>
-                      ${eventTypeTemplate}
-                    </fieldset>
-                  </div>
-                </div>
+            <div class="event__type-list">
+              <fieldset class="event__type-group">
+                <legend class="visually-hidden">Event type</legend>
+                ${eventTypeTemplate}
+              </fieldset>
+            </div>
+          </div>
 
-                <div class="event__field-group  event__field-group--destination">
-                  ${currentTypeTemplate}
-                  ${chooseDestinationTemplate}
-                    <datalist id="destination-list-1">
-                      ${destinationListTemplate}
-                    </datalist>
-                </div>
+          <div class="event__field-group  event__field-group--destination">
+            ${currentTypeTemplate}
+            ${chooseDestinationTemplate}
+              <datalist id="destination-list-1">
+                ${destinationListTemplate}
+              </datalist>
+          </div>
 
-                <div class="event__field-group  event__field-group--time">
-                  ${dateTemplate}
-                </div>
+          <div class="event__field-group  event__field-group--time">
+            ${dateTemplate}
+          </div>
 
-                <div class="event__field-group  event__field-group--price">
-                  ${priceTemplate}
-                </div>
+          <div class="event__field-group  event__field-group--price">
+            ${priceTemplate}
+          </div>
 
-                <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                <button class="event__reset-btn" type="reset">Delete</button>
-                <button class="event__rollup-btn" type="button">
-                  <span class="visually-hidden">Open event</span>
-                </button>
-              </header>
-              <section class="event__details">
-                <section class="event__section  event__section--offers">
-                <h3 class="event__section-title  event__section-title--offers ${offersHeaderClass}">Offers</h3>
-                <div class="event__available-offers">
-                  ${offersTemplate}
-                </div>
-                </section>
-                <section class="event__section  event__section--destination">
-                  <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                  ${destinationDescriptionTemplate}
-                </section>
-              </section>
-            </form>
-          </li>`;
+          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__rollup-btn" type="button">
+            <span class="visually-hidden">Open event</span>
+          </button>
+        </header>
+        <section class="event__details">
+          <section class="event__section  event__section--offers">
+          <h3 class="event__section-title  event__section-title--offers ${offersHeaderClass}">Offers</h3>
+          <div class="event__available-offers">
+            ${offersTemplate}
+          </div>
+          </section>
+          <section class="event__section  event__section--destination">
+            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+            ${destinationDescriptionTemplate}
+          </section>
+        </section>
+      </form>
+    </li>`
+  );
 };
 
 export default class EditPointView {
   #element = null;
   #point = null;
 
-  constructor(point = BLANK_POINT) {
+  constructor(point) {
     this.#point = point;
   }
 
