@@ -1,16 +1,19 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils.js';
 import { TYPES, CITIES, dateFormat } from '../const.js';
+import { createElement } from '../render.js';
 
 let offersHeaderClass;
 
-const createChooseDestinationTemplate = (destination) =>
+const createChooseDestinationTemplate = (destination) => (
   `<input class="event__input  event__input--destination"
     id="event-destination-1"
     type="text"
     name="event-destination"
     value="${destination.name}"
-    list="destination-list-1">`;
+    list="destination-list-1"
+  >`
+);
 
 const createDestinationListTemplate = () =>
   CITIES.map((city) =>
@@ -21,7 +24,8 @@ const createTypeIconTemplate = (type) => (
     width="17"
     height="17"
     src="img/icons/${type}.png"
-    alt="Event type icon">`
+    alt="Event type icon"
+  >`
 );
 
 const createEditPointDateTemplate = (dateFrom, dateTo) => {
@@ -29,21 +33,24 @@ const createEditPointDateTemplate = (dateFrom, dateTo) => {
   const startTime = dayjs(dateFrom).format(dateFormat.dateAndTime);
   const finishTime = dayjs(dateTo).format(dateFormat.dateAndTime);
 
-  return `<label class="visually-hidden" for="event-start-time-1">From</label>
+  return (
+    `<label class="visually-hidden" for="event-start-time-1">From</label>
 
-          <input class="event__input  event__input--time"
-            id="event-start-time-1"
-            type="text"
-            name="event-start-time"
-            value="${startTime}">
-            &mdash;
-          <label class="visually-hidden" for="event-end-time-1">To</label>
+    <input class="event__input  event__input--time"
+      id="event-start-time-1"
+      type="text"
+      name="event-start-time"
+      value="${startTime}">
+      &mdash;
+    <label class="visually-hidden" for="event-end-time-1">To</label>
 
-          <input class="event__input  event__input--time"
-            id="event-end-time-1"
-            type="text"
-            name="event-end-time"
-            value="${finishTime}">`;
+    <input class="event__input  event__input--time"
+      id="event-end-time-1"
+      type="text"
+      name="event-end-time"
+      value="${finishTime}"
+    >`
+  );
 };
 
 const createPriceTemplate = (basePrice) => (
@@ -56,13 +63,15 @@ const createPriceTemplate = (basePrice) => (
     id="event-price-1"
     type="text"
     name="event-price"
-    value="${basePrice}">`
+    value="${basePrice}"
+  >`
 );
 
 const createCurrentPointTypeTemplate = (type) => (
   `<label class="event__label  event__type-output" for="event-destination-1">
     ${type}
-  </label>`);
+  </label>`
+);
 
 const createEventTypeTemplate = (type) =>
 
@@ -85,23 +94,18 @@ const createOffersTemplate = (offers) => {
   if (offers.length === 0) {
     offersHeaderClass = 'visually-hidden';
 
-    return '<h3 class="event__section-title  event__section-title--offers"></h3>';
+    return (
+      '<h3 class="event__section-title  event__section-title--offers"></h3>'
+    );
 
   } else {
     offersHeaderClass = '';
+    const isChecked = Boolean(getRandomInteger(0, 1));
+    const optionSelected = isChecked ? 'checked' : '';
 
-    const fragment = new DocumentFragment();
-
-    offers.forEach((offer) => {
-      const isChecked = Boolean(getRandomInteger(0, 1));
-
-      const optionSelected = isChecked
-        ? 'checked'
-        : '';
-
-      const textNode = document.createTextNode(
-        `<div class="event__available-offers">
-          <div class="event__offer-selector">
+    return offers.map(
+      (offer) =>
+        `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden"
             id="event-offer-${offer.title}-1"
             type="checkbox"
@@ -114,18 +118,7 @@ const createOffersTemplate = (offers) => {
                 &plus;&euro;&nbsp;
               <span class="event__offer-price">${offer.price}</span>
             </label>
-          </div>`);
-
-      fragment.append(textNode);
-    });
-
-    const newArr = [];
-
-    fragment.childNodes.forEach((node) => {
-      newArr.push(node.nodeValue);
-    });
-
-    return newArr.join('');
+          </div>`).join('');
   }
 };
 
@@ -133,7 +126,7 @@ const createDestinationDescriptionTemplate = (destination) => (
   `<p class="event__destination-description">${destination.description}</p>`
 );
 
-export const createEditPointTemplate = (point = {}) => {
+const createEditPointTemplate = (point = {}) => {
   const {
     basePrice = 1,
     dateFrom = null,
@@ -153,7 +146,8 @@ export const createEditPointTemplate = (point = {}) => {
   const offersTemplate = createOffersTemplate(offers);
   const destinationDescriptionTemplate = createDestinationDescriptionTemplate(destination);
 
-  return `<li class="trip-events__item">
+  return (
+    `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
@@ -196,7 +190,9 @@ export const createEditPointTemplate = (point = {}) => {
         <section class="event__details">
           <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers ${offersHeaderClass}">Offers</h3>
-          ${offersTemplate}
+          <div class="event__available-offers">
+            ${offersTemplate}
+          </div>
           </section>
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -204,5 +200,31 @@ export const createEditPointTemplate = (point = {}) => {
           </section>
         </section>
       </form>
-    </li>`;
+    </li>`
+  );
 };
+
+export default class EditPointView {
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
+  }
+
+  get element() {
+    if(!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createEditPointTemplate(this.#point);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

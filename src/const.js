@@ -28,8 +28,17 @@ const TYPES = [
   'restaurant',
 ];
 
+const BLANK_POINT = {
+  basePrice: 1,
+  dateFrom: null,
+  dateTo: null,
+  destination: '',
+  offers: null,
+  type: '',
+};
+
 const dateFormat = {
   dateAndTime: 'DD/MM/YYYY HH:mm',
 };
 
-export { RANDOM_TEXT, CITIES, TYPES, dateFormat };
+export { RANDOM_TEXT, CITIES, TYPES, dateFormat, BLANK_POINT };
