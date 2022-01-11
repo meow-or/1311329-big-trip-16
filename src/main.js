@@ -10,7 +10,7 @@ import { generatePoint } from './mock/trip-point.js';
 import { generateFilter } from './mock/filter.js';
 import { generateSortFilter } from './mock/sort.js';
 
-const POINT_COUNT = 16;
+const POINT_COUNT = 17;
 
 const points = Array.from({ length: POINT_COUNT }, generatePoint);
 const filters = generateFilter(points);
