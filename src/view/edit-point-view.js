@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils.js';
 import { TYPES, CITIES, dateFormat } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from './abstract-view.js';
 
 let offersHeaderClass;
 
@@ -203,28 +203,25 @@ const createEditPointTemplate = (point = {}) => {
     </li>`
   );
 };
-
-export default class EditPointView {
-  #element = null;
+export default class EditPointView extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createEditPointTemplate(this.#point);
   }
 
-  removeElement() {
-    this.#element = null;
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+  }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 }

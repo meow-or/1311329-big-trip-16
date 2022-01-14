@@ -9,14 +9,13 @@ import { RenderPosition, render } from './render.js';
 import { generatePoint } from './mock/trip-point.js';
 import { generateFilter } from './mock/filter.js';
 import { generateSortFilter } from './mock/sort.js';
+import { closeFormBtnClass, editPointBtnClass } from './const.js';
 
 const POINT_COUNT = 17;
 
 const points = Array.from({ length: POINT_COUNT }, generatePoint);
 const filters = generateFilter(points);
 const sortfilters = generateSortFilter(points);
-const editPointBtnClass = '.event__rollup-btn';
-const closeFormBtnClass = '.event--edit .event__rollup-btn';
 const siteHeaderElement = document.querySelector('header');
 const siteNavigationElement = siteHeaderElement.querySelector('.trip-controls__navigation');
 const filtersContainer = siteHeaderElement.querySelector('.trip-controls__filters');
@@ -46,22 +45,18 @@ const renderPoint = (pointsContainer, point) => {
     }
   };
 
-  pointComponent.element
-    .querySelector(editPointBtnClass)
-    .addEventListener('click', () => {
-      replacePointToForm();
-      document.addEventListener('keydown', onEscKeyDown);
-      pointEditComponent.element.querySelector(closeFormBtnClass).addEventListener('click', replaceFormToPoint);
-    });
+  pointComponent.setEditClickHandler(() => {
+    replacePointToForm();
+    document.addEventListener('keydown', onEscKeyDown);
+    pointEditComponent.element.querySelector(closeFormBtnClass).addEventListener('click', replaceFormToPoint);
+  });
 
-  pointEditComponent.element
-    .querySelector('form')
-    .addEventListener('submit', (evt) => {
-      evt.preventDefault();
-      replaceFormToPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
-      pointEditComponent.element.querySelector(closeFormBtnClass).removeEventListener('click', replaceFormToPoint);
-    });
+  pointEditComponent.setFormSubmitHandler((evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+    document.removeEventListener('keydown', onEscKeyDown);
+    pointEditComponent.element.querySelector(closeFormBtnClass).removeEventListener('click', replaceFormToPoint);
+  });
 
   render(pointsContainer, pointComponent.element, RenderPosition.BEFOREEND);
 };

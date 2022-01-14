@@ -41,4 +41,7 @@ const dateFormat = {
   dateAndTime: 'DD/MM/YYYY HH:mm',
 };
 
-export { RANDOM_TEXT, CITIES, TYPES, dateFormat, BLANK_POINT };
+const editPointBtnClass = '.event__rollup-btn';
+const closeFormBtnClass = '.event--edit .event__rollup-btn';
+
+export { RANDOM_TEXT, CITIES, TYPES, dateFormat, BLANK_POINT, editPointBtnClass, closeFormBtnClass };
