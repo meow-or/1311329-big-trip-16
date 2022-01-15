@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
-import { getRandomInteger } from '../utils.js';
+import { getRandomInteger } from '../utils/common.js';
 import { TYPES, CITIES, dateFormat } from '../const.js';
 import AbstractView from './abstract-view.js';
+import { closeFormBtnClass, deletePointBtnClass } from '../const.js';
 
 let offersHeaderClass;
 
@@ -217,11 +218,35 @@ export default class EditPointView extends AbstractView {
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
-  }
+    this.element
+      .querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  setFormCloseHandler = (callback) => {
+    this._callback.formClose = callback;
+    this.element
+      .querySelector(closeFormBtnClass)
+      .addEventListener('click', this.#closeFormHandler);
+  };
+
+  setPointDeleteHandler = (callback) => {
+    this._callback.pointDelete = callback;
+    this.element
+      .querySelector(deletePointBtnClass)
+      .addEventListener('click', this.#deletePointHandler);
+  };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit();
-  }
+  };
+
+  #closeFormHandler = () => {
+    this._callback.formClose();
+  };
+
+  #deletePointHandler = () => {
+    this._callback.pointDelete();
+  };
 }

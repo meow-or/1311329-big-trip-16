@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract-view.js';
-import { closeFormBtnClass, editPointBtnClass } from '../const.js';
+import { editPointBtnClass } from '../const.js';
 
 const HOUR = 3600000;
 const DAY = 86400000;
@@ -108,10 +108,10 @@ export default class PointView extends AbstractView {
   setEditClickHandler = (callback) => {
     this._callback.editClick = callback;
     this.element.querySelector(editPointBtnClass).addEventListener('click', this.#editClickHandler);
-  }
+  };
 
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
-  }
+  };
 }

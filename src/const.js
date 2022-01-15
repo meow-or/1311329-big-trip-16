@@ -43,5 +43,6 @@ const dateFormat = {
 
 const editPointBtnClass = '.event__rollup-btn';
 const closeFormBtnClass = '.event--edit .event__rollup-btn';
+const deletePointBtnClass = '.event__reset-btn';
 
-export { RANDOM_TEXT, CITIES, TYPES, dateFormat, BLANK_POINT, editPointBtnClass, closeFormBtnClass };
+export { RANDOM_TEXT, CITIES, TYPES, dateFormat, BLANK_POINT, editPointBtnClass, closeFormBtnClass, deletePointBtnClass };

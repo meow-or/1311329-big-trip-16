@@ -3,7 +3,8 @@ import AbstractView from './abstract-view.js';
 const createSortItemTemplate = (filter, isChecked) => {
   const { name } = filter;
 
-  return `<div class="trip-sort__item  trip-sort__item--${name}">
+  return (
+    `<div class="trip-sort__item  trip-sort__item--${name}">
       <input id="sort-${name}"
         class="trip-sort__input  visually-hidden"
         type="radio"
@@ -11,7 +12,8 @@ const createSortItemTemplate = (filter, isChecked) => {
         value="sort-${name}"
         ${isChecked ? 'checked' : ''}>
       <label class="trip-sort__btn" for="sort-${name}">${name}</label>
-    </div>`;
+    </div>`
+  );
 };
 
 const createSortTemplate = (sortItems) => {
@@ -19,9 +21,11 @@ const createSortTemplate = (sortItems) => {
     .map((sortfilter, index) => createSortItemTemplate(sortfilter, index === 0))
     .join('');
 
-  return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+  return (
+    `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       ${sortItemsTemplate}
-    </form>`;
+    </form>`
+  );
 };
 
 export default class SortView extends AbstractView {
