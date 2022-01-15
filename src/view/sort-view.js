@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from './abstract-view.js';
 
 const createSortItemTemplate = (filter, isChecked) => {
   const { name } = filter;
@@ -28,27 +28,15 @@ const createSortTemplate = (sortItems) => {
   );
 };
 
-export default class SortView {
-  #element = null;
+export default class SortView extends AbstractView {
   #sortfilters = null;
 
   constructor(sortfilters) {
+    super();
     this.#sortfilters = sortfilters;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createSortTemplate(this.#sortfilters);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

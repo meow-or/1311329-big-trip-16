@@ -1,4 +1,4 @@
-import { getRandomInteger, createRandomIdFromRange } from '../utils.js';
+import { getRandomInteger, createRandomIdFromRange } from '../utils/common.js';
 import { RANDOM_TEXT, CITIES } from '../const.js';
 import dayjs from 'dayjs';
 

@@ -1,4 +1,4 @@
-import { sortPriceToMin, sortTimeToMin } from '../utils';
+import { sortPriceToMin, sortTimeToMin } from '../utils/point';
 
 const pointToSortMap = {
   day: (points) => points,

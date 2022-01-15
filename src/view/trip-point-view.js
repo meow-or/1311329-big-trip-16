@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import { createElement } from '../render';
+import AbstractView from './abstract-view.js';
+import { editPointBtnClass } from '../const.js';
 
 const HOUR = 3600000;
 const DAY = 86400000;
@@ -92,28 +93,25 @@ const createTripPointTemplate = (point) => {
     </li>`
   );
 };
-
-export default class PointView {
-  #element = null;
+export default class PointView extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createTripPointTemplate(this.#point);
   }
 
-  removeElement() {
-    this.#element = null;
-  }
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector(editPointBtnClass).addEventListener('click', this.#editClickHandler);
+  };
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils.js';
 import { TYPES, CITIES, dateFormat, BLANK_POINT } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from './abstract-view.js';
 
 let offersHeaderClass;
 
@@ -219,27 +219,15 @@ const createNewPointTemplate = (point = {}) => {
   );
 };
 
-export default class NewPointView {
-  #element = null;
+export default class NewPointView extends AbstractView {
   #point = null;
 
   constructor(point = BLANK_POINT) {
+    super();
     this.#point = point;
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template () {
     return createNewPointTemplate(this.#point);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

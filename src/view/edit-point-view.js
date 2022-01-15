@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
-import { getRandomInteger } from '../utils.js';
+import { getRandomInteger } from '../utils/common.js';
 import { TYPES, CITIES, dateFormat } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from './abstract-view.js';
+import { closeFormBtnClass, deletePointBtnClass } from '../const.js';
 
 let offersHeaderClass;
 
@@ -203,28 +204,49 @@ const createEditPointTemplate = (point = {}) => {
     </li>`
   );
 };
-
-export default class EditPointView {
-  #element = null;
+export default class EditPointView extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createEditPointTemplate(this.#point);
   }
 
-  removeElement() {
-    this.#element = null;
-  }
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element
+      .querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  setFormCloseHandler = (callback) => {
+    this._callback.formClose = callback;
+    this.element
+      .querySelector(closeFormBtnClass)
+      .addEventListener('click', this.#closeFormHandler);
+  };
+
+  setPointDeleteHandler = (callback) => {
+    this._callback.pointDelete = callback;
+    this.element
+      .querySelector(deletePointBtnClass)
+      .addEventListener('click', this.#deletePointHandler);
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
+
+  #closeFormHandler = () => {
+    this._callback.formClose();
+  };
+
+  #deletePointHandler = () => {
+    this._callback.pointDelete();
+  };
 }
