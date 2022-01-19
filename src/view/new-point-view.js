@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { getRandomInteger } from '../utils.js';
+import { getRandomInteger } from '../utils/common.js';
 import { TYPES, CITIES, dateFormat, BLANK_POINT } from '../const.js';
 import AbstractView from './abstract-view.js';
 
@@ -194,7 +194,7 @@ const createNewPointTemplate = (point = {}) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__reset-btn" type="reset">Cancel</button>
 
         </header>
         <section class="event__details">
