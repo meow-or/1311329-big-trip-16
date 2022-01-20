@@ -2,8 +2,7 @@ import TripBoardView from '../view/trip-board-view.js';
 import PointsContainerView from '../view/points-container-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import SortView from '../view/sort-view.js';
-import PointView from '../view/point-view.js';
-import EditPointView from '../view/edit-point-view.js';
+import PointPresenter from './point-presenter.js';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
 
 const POINT_COUNT = 17;
@@ -37,41 +36,8 @@ export default class TripPresenter {
   }
 
   #renderPoint = (point) => {
-    const pointComponent = new PointView(point);
-    const pointEditComponent = new EditPointView(point);
-
-    const replacePointToForm = () => {
-      replace(pointEditComponent, pointComponent);
-    };
-
-    const replaceFormToPoint = () => {
-      replace(pointComponent, pointEditComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    pointComponent.setEditClickHandler(() => {
-      replacePointToForm();
-      document.addEventListener('keydown', onEscKeyDown);
-      pointEditComponent.setFormCloseHandler(() => {
-        replaceFormToPoint();
-      });
-      pointEditComponent.setPointDeleteHandler(() => {
-        remove(pointEditComponent);
-      });
-      pointEditComponent.setFormSubmitHandler(() => {
-        replaceFormToPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      });
-    });
-
-    render(this.#pointsContainerComponent, pointComponent, RenderPosition.BEFOREEND);
+    const pointPresenter = new PointPresenter(this.#pointsContainerComponent);
+    pointPresenter.init(point);
   }
 
   #renderPoints = () => {
