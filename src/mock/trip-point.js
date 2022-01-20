@@ -1,6 +1,7 @@
 import { getRandomInteger, createRandomIdFromRange } from '../utils/common.js';
 import { RANDOM_TEXT, CITIES } from '../const.js';
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 
 const MIN_NUMBER_OF_SENTENCES = 1;
 const MAX_NUMBER_OF_SENTENCES = 5;
@@ -10,8 +11,6 @@ const MIN_PICTURE_NUMBER = 1;
 const MAX_PICTURE_NUMBER = 5;
 const MIN_DAYS_GAP = 1;
 const MAX_DAYS_GAP = 3;
-
-const generateId = createRandomIdFromRange(0, 1000);
 
 const generateCity = () => {
   const randomIndex = getRandomInteger(0, CITIES.length - 1);
@@ -247,7 +246,7 @@ export const generatePoint = () => {
     dateFrom,
     dateTo,
     destination: generateDestination(),
-    id: generateId(),
+    id: nanoid(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     offers: typeOffers.offers,
     type: typeOffers.type,
