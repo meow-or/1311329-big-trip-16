@@ -17,6 +17,9 @@ export default class PointPresenter {
   init = (point) => {
     this.#point = point;
 
+    const prevPointComponent = this.#pointComponent;
+    const prevPointEditComponent = this.#pointEditComponent;
+
     this.#pointComponent = new PointView(point);
     this.#pointEditComponent = new EditPointView(point);
 
@@ -25,7 +28,26 @@ export default class PointPresenter {
     this.#pointEditComponent.setPointDeleteHandler(this.#handleDeletePointClick);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleEditFormSubmit);
 
-    render(this.#pointsContainer, this.#pointComponent, RenderPosition.BEFOREEND);
+    if (prevPointComponent === null || prevPointEditComponent === null) {
+      render(this.#pointsContainer, this.#pointComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this.#pointsContainer.element.contains(prevPointComponent.element)) {
+      replace(this.#pointComponent, prevPointComponent);
+    }
+
+    if (this.#pointsContainer.element.contains(prevPointEditComponent.element)) {
+      replace(this.#pointEditComponent, prevPointEditComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevPointEditComponent);
+  }
+
+  destroy = () => {
+    remove(this.#pointComponent);
+    remove(this.#pointEditComponent);
   }
 
   #replacePointToForm = () => {
