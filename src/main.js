@@ -25,5 +25,3 @@ render(siteNavigationElement, new SiteMenuView(), RenderPosition.BEFOREEND);
 render(filtersContainer, filtersComponent, RenderPosition.BEFOREEND);
 
 tripBoardPresenter.init(points);
-
-console.log('sortfilters в main', sortfilters);
