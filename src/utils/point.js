@@ -6,6 +6,8 @@ const isFuture = (dateFrom, dateTo) =>
 const isPast = (dateFrom, dateTo) =>
   dayjs().isBefore(dateTo) || (dayjs().isBefore(dateFrom) && dayjs().isAfter(dateTo));
 
+const sortDayToMin = (prev, next) => dayjs(prev.dateFrom) - dayjs(next.dateFrom);
+
 const sortPriceToMin = (prev, next) => next.basePrice - prev.basePrice;
 
 const sortTimeToMin = (prev, next) => {
@@ -21,4 +23,4 @@ const sortTimeToMin = (prev, next) => {
 };
 
 
-export { isFuture, isPast, sortPriceToMin, sortTimeToMin };
+export { isFuture, isPast, sortPriceToMin, sortTimeToMin, sortDayToMin };

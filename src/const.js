@@ -37,7 +37,7 @@ const BLANK_POINT = {
   type: '',
 };
 
-const dateFormat = {
+const DateFormat = {
   dateAndTime: 'DD/MM/YYYY HH:mm',
 };
 
@@ -46,14 +46,23 @@ const closeFormBtnClass = '.event--edit .event__rollup-btn';
 const deletePointBtnClass = '.event__reset-btn';
 const addEventBtnClass = '.trip-main__event-add-btn';
 
+const SortType = {
+  day: 'day',
+  event: 'event',
+  time: 'time',
+  price: 'price',
+  offers: 'offers'
+};
+
 export {
   RANDOM_TEXT,
   CITIES,
   TYPES,
-  dateFormat,
+  DateFormat as dateFormat,
   BLANK_POINT,
   editPointBtnClass,
   closeFormBtnClass,
   deletePointBtnClass,
-  addEventBtnClass
+  addEventBtnClass,
+  SortType
 };
