@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import { getRandomInteger } from '../utils/common.js';
-import { TYPES, CITIES, dateFormat } from '../const.js';
+import { TYPES, CITIES, dateFormat, BLANK_POINT } from '../const.js';
 import AbstractView from './abstract-view.js';
 import { closeFormBtnClass, deletePointBtnClass } from '../const.js';
 
@@ -91,7 +90,7 @@ const createEventTypeTemplate = (type) =>
       </label>
     </div>`).join('');
 
-const createOffersTemplate = (offers) => {
+const createOffersTemplate = (offers, isOfferChecked) => {
   if (offers.length === 0) {
     offersHeaderClass = 'visually-hidden';
 
@@ -101,8 +100,6 @@ const createOffersTemplate = (offers) => {
 
   } else {
     offersHeaderClass = '';
-    const isChecked = Boolean(getRandomInteger(0, 1));
-    const optionSelected = isChecked ? 'checked' : '';
 
     return offers.map(
       (offer) =>
@@ -111,7 +108,7 @@ const createOffersTemplate = (offers) => {
             id="event-offer-${offer.title}-1"
             type="checkbox"
             name="event-offer-${offer.title}"
-            ${optionSelected}>
+            ${isOfferChecked ? 'checked' : ''}>
 
             <label class="event__offer-label"
               for="event-offer-${offer.title}-1">
@@ -127,15 +124,52 @@ const createDestinationDescriptionTemplate = (destination) => (
   `<p class="event__destination-description">${destination.description}</p>`
 );
 
-const createEditPointTemplate = (point = {}) => {
+const createEditPointTemplate = (data) => {
   const {
     basePrice = 1,
-    dateFrom = null,
-    dateTo = null,
-    destination = '',
-    offers,
-    type,
-  } = point;
+    dateFrom = 1000000,
+    dateTo = 1000000,
+    destination = {
+      description: 'Nunc fermentum tortor ac porta',
+      name: 'Paris',
+      pictures: [
+        {
+          src: 'img/photos/1.jpg',
+          description: 'some description',
+        },
+        {
+          src: 'img/photos/2.jpg',
+          description: 'awesome description',
+        },
+        {
+          src: 'img/photos/3.jpg',
+          description: 'a little bit of description',
+        },
+        {
+          src: 'img/photos/4.jpg',
+          description: 'just description',
+        },
+        {
+          src: 'img/photos/5.jpg',
+          description: 'simple description',
+        },
+      ],
+    },
+    offers = [
+      {
+        id: 1,
+        title: 'pelmeni',
+        price: 25,
+      },
+      {
+        id: 2,
+        title: 'vodka',
+        price: 5,
+      },
+    ],
+    type = 'restaurant',
+    isOfferChecked
+  } = data;
 
   const chooseDestinationTemplate = createChooseDestinationTemplate(destination);
   const destinationListTemplate = createDestinationListTemplate(destination);
@@ -144,7 +178,7 @@ const createEditPointTemplate = (point = {}) => {
   const eventTypeTemplate = createEventTypeTemplate(type);
   const currentTypeTemplate = createCurrentPointTypeTemplate(type);
   const typeIconTemplate = createTypeIconTemplate(type);
-  const offersTemplate = createOffersTemplate(offers);
+  const offersTemplate = createOffersTemplate(offers, isOfferChecked);
   const destinationDescriptionTemplate = createDestinationDescriptionTemplate(destination);
 
   return (
@@ -205,16 +239,16 @@ const createEditPointTemplate = (point = {}) => {
   );
 };
 export default class EditPointView extends AbstractView {
-  #point = null;
-
-  constructor(point) {
+  constructor(point = BLANK_POINT) {
     super();
-    this.#point = point;
+    this._data = EditPointView.parsePointToData(point);
   }
 
   get template() {
-    return createEditPointTemplate(this.#point);
+    return createEditPointTemplate(this._data);
   }
+
+  
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
@@ -239,7 +273,7 @@ export default class EditPointView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(EditPointView.parseDataToPoint(this._data));
   };
 
   #closeFormHandler = () => {
@@ -249,4 +283,20 @@ export default class EditPointView extends AbstractView {
   #deletePointHandler = () => {
     this._callback.pointDelete();
   };
+
+  static parsePointToData = (point) => ({...point,
+    isOfferChecked: point.offers !== null,
+  });
+
+  static parseDataToPoint = (data) => {
+    const point = {...data};
+
+    if (!point.isOfferChecked) {
+      point.offers = null;
+    }
+
+    delete point.isOfferChecked;
+
+    return point;
+  }
 }

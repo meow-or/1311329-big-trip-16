@@ -140,11 +140,47 @@ const createDestinationPhotoTemplate = (destination) => {
 const createNewPointTemplate = (point = {}) => {
   const {
     basePrice = 1,
-    dateFrom = null,
-    dateTo = null,
-    destination = '',
-    offers,
-    type,
+    dateFrom = 1000000,
+    dateTo = 1000000,
+    destination = {
+      description: 'Nunc fermentum tortor ac porta',
+      name: 'Paris',
+      pictures: [
+        {
+          src: 'img/photos/1.jpg',
+          description: 'some description',
+        },
+        {
+          src: 'img/photos/2.jpg',
+          description: 'awesome description',
+        },
+        {
+          src: 'img/photos/3.jpg',
+          description: 'a little bit of description',
+        },
+        {
+          src: 'img/photos/4.jpg',
+          description: 'just description',
+        },
+        {
+          src: 'img/photos/5.jpg',
+          description: 'simple description',
+        },
+      ],
+    },
+    offers = [
+      {
+        id: 1,
+        title: 'pelmeni',
+        price: 25,
+      },
+      {
+        id: 2,
+        title: 'vodka',
+        price: 5,
+      },
+    ],
+    type = 'restaurant',
   } = point;
 
   const chooseDestinationTemplate = createChooseDestinationTemplate(destination);
@@ -227,7 +263,25 @@ export default class NewPointView extends AbstractView {
     this.#point = point;
   }
 
-  get template () {
+  get template() {
     return createNewPointTemplate(this.#point);
   }
+
+  setNewEventClickHandler = (callback) => {
+    this._callback.createNewEventClick = callback;
+    document.querySelector('.trip-main__event-add-btn').addEventListener('click', this.#createNewEventClickHandler);
+  };
+
+  setCancelNewEventClickHandler = (callback) => {
+    this._callback.cancelNewEventClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#cancelNewEventClickHandler);
+  }
+
+  #createNewEventClickHandler = () => {
+    this._callback.createNewEventClick();
+  };
+
+  #cancelNewEventClickHandler = () => {
+    this._callback.cancelNewEventClick();
+  };
 }

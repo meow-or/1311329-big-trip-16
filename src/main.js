@@ -8,14 +8,15 @@ import { generateSortFilter } from './mock/sort.js';
 
 const POINT_COUNT = 17;
 
-const points = Array.from({ length: POINT_COUNT }, generatePoint);
-const filters = generateFilter(points);
-const sortfilters = generateSortFilter(points);
 const siteHeaderElement = document.querySelector('header');
 const siteNavigationElement = siteHeaderElement.querySelector('.trip-controls__navigation');
 const filtersContainer = siteHeaderElement.querySelector('.trip-controls__filters');
 const siteMainElement = document.querySelector('main');
 const mainContentContainer = siteMainElement.querySelector('.page-body__container');
+
+const points = Array.from({ length: POINT_COUNT }, generatePoint);
+const filters = generateFilter(points);
+const sortfilters = generateSortFilter(points);
 const filtersComponent = new FiltersView(filters);
 const filterInputs = Array.from(filtersComponent.element.querySelectorAll('input'));
 
