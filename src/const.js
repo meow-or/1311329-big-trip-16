@@ -47,11 +47,11 @@ const deletePointBtnClass = '.event__reset-btn';
 const addEventBtnClass = '.trip-main__event-add-btn';
 
 const SortType = {
-  day: 'day',
-  event: 'event',
-  time: 'time',
-  price: 'price',
-  offers: 'offers'
+  DAY: 'DAY',
+  EVENT: 'EVENT',
+  TIME: 'TIME',
+  PRICE: 'PRICE',
+  OFFERS: 'OFFERS'
 };
 
 export {
