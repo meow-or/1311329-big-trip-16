@@ -75,7 +75,7 @@ export default class PointPresenter {
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToPoint();
-      this.#replaceNewEventFormToPoint();
+      // this.#replaceNewEventFormToPoint();
     }
   };
 
@@ -106,16 +106,16 @@ export default class PointPresenter {
   //   this.#mode = Mode.CREATING;
   // }
 
-  #replaceNewEventFormToPoint = () => {
-    replace(this.#pointComponent, this.#newPointComponent);
-    document.removeEventListener('keydown', this.#onEscKeyDownHandler);
-  }
+  // #replaceNewEventFormToPoint = () => {
+  //   replace(this.#pointComponent, this.#newPointComponent);
+  //   document.removeEventListener('keydown', this.#onEscKeyDownHandler);
+  // }
 
   #onEscKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.#replaceFormToPoint();
-      this.#replaceNewEventFormToPoint();
+      // this.#replaceNewEventFormToPoint();
       document.removeEventListener('keydown', this.#onEscKeyDownHandler);
     }
   };
