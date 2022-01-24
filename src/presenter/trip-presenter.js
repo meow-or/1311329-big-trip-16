@@ -3,6 +3,7 @@ import PointsContainerView from '../view/points-container-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import SortView from '../view/sort-view.js';
 import PointPresenter from './point-presenter.js';
+// import NewPointView from '../view/new-point-view.js';
 import { updateItem } from '../utils/common.js';
 import { render, RenderPosition } from '../utils/render.js';
 import { sortDayToMin, sortPriceToMin, sortTimeToMin } from '../utils/point.js';
@@ -18,6 +19,7 @@ export default class TripPresenter {
 
   #tripBoardComponent = new TripBoardView();
   #pointsContainerComponent = new PointsContainerView();
+  // #newPointComponent = new NewPointView();
 
   #tripPoints = [];
   #pointPresenter = new Map();
@@ -93,6 +95,10 @@ export default class TripPresenter {
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   }
 
+  // #renderNewPointForm = () => {
+  //   render(this.#pointsContainerComponent, this.#newPointComponent, RenderPosition.BEFOREEND);
+  // }
+
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(
       this.#pointsContainerComponent,
@@ -128,6 +134,7 @@ export default class TripPresenter {
     } else {
       this.#renderSort();
       this.#renderPointsContainer();
+      // this.#renderNewPointForm();
       this.#renderPoints();
     }
   }

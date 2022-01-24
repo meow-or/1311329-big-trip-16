@@ -30,11 +30,47 @@ const TYPES = [
 
 const BLANK_POINT = {
   basePrice: 1,
-  dateFrom: null,
-  dateTo: null,
-  destination: '',
-  offers: null,
-  type: '',
+  dateFrom: 1000000,
+  dateTo: 1000000,
+  destination: {
+    description: 'Nunc fermentum tortor ac porta',
+    name: 'Paris',
+    pictures: [
+      {
+        src: 'img/photos/1.jpg',
+        description: 'some description',
+      },
+      {
+        src: 'img/photos/2.jpg',
+        description: 'awesome description',
+      },
+      {
+        src: 'img/photos/3.jpg',
+        description: 'a little bit of description',
+      },
+      {
+        src: 'img/photos/4.jpg',
+        description: 'just description',
+      },
+      {
+        src: 'img/photos/5.jpg',
+        description: 'simple description',
+      },
+    ],
+  },
+  offers: [
+    {
+      id: 1,
+      title: 'pelmeni',
+      price: 25,
+    },
+    {
+      id: 2,
+      title: 'vodka',
+      price: 5,
+    },
+  ],
+  type: 'restaurant',
 };
 
 const DateFormat = {
