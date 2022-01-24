@@ -50,26 +50,19 @@ export default class TripPresenter {
   }
 
   #sortPoints = (sortType) => {
-    switch (sortType) {
-      case SortType.day:
+    switch (sortType.toUpperCase()) {
+
+      case SortType.DAY:
         this.#tripPoints.sort(sortDayToMin);
-        this.#currentSortType = SortType.day;
+        this.#currentSortType = SortType.DAY;
         break;
-      case SortType.event:
-        this.#tripPoints.sort(sortDayToMin);
-        this.#currentSortType = SortType.event;
-        break;
-      case SortType.time:
+      case SortType.TIME:
         this.#tripPoints.sort(sortTimeToMin);
-        this.#currentSortType = SortType.time;
+        this.#currentSortType = SortType.TIME;
         break;
-      case SortType.price:
+      case SortType.PRICE:
         this.#tripPoints.sort(sortPriceToMin);
-        this.#currentSortType = SortType.price;
-        break;
-      case SortType.offers:
-        this.#tripPoints.sort(sortDayToMin);
-        this.#currentSortType = SortType.offers;
+        this.#currentSortType = SortType.PRICE;
         break;
       default:
         this.#tripPoints = [...this.#sourcedTripPoints];
