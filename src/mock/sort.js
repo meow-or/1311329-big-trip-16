@@ -1,16 +1,6 @@
-import { sortPriceToMin, sortTimeToMin } from '../utils/point';
-
-const pointToSortMap = {
-  day: (points) => points,
-  event: (points) => points,
-  time: (points) =>
-    points.sort(sortTimeToMin),
-  price: (points) =>
-    points.sort(sortPriceToMin),
-  offers: (points) => points,
-};
+import { SortType } from '../const.js';
 
 export const generateSortFilter = () =>
-  Object.entries(pointToSortMap).map(([sortName]) => ({
+  Object.entries(SortType).map(([sortName]) => ({
     name: sortName
   }));
