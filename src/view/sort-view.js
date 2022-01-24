@@ -1,26 +1,20 @@
 import AbstractView from './abstract-view.js';
 
 const createSortItemTemplate = (filter, isChecked) => {
-  const { name } = filter;
+  const sortTypeName = filter.name.toLowerCase();
 
-  const isDisabled = () => {
-    if (name === 'event' || name === 'offers') {
-      return 'disabled';
-    }
+  const isDisabled = () => sortTypeName === 'event' || sortTypeName === 'offers' ? 'disabled' : '';
 
-    return '';
-  };
-
-  return `<div class="trip-sort__item  trip-sort__item--${name}">
-      <input id="sort-${name}"
+  return `<div class="trip-sort__item  trip-sort__item--${sortTypeName}">
+      <input id="sort-${sortTypeName}"
         class="trip-sort__input  visually-hidden"
         type="radio"
         name="trip-sort"
-        value="sort-${name}"
-        data-sort-type="${name}"
+        value="sort-${sortTypeName}"
+        data-sort-type="${sortTypeName}"
         ${isDisabled()}
         ${isChecked ? 'checked' : ''}>
-      <label class="trip-sort__btn" for="sort-${name}">${name}</label>
+      <label class="trip-sort__btn" for="sort-${sortTypeName}">${sortTypeName}</label>
     </div>`;
 };
 
@@ -58,7 +52,7 @@ export default class SortView extends AbstractView {
       return;
     }
 
-    {evt.preventDefault();}
+    evt.preventDefault();
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 }

@@ -59,7 +59,7 @@ export default class TripPresenter {
   };
 
   #sortPoints = (sortType) => {
-    switch (sortType.toUpperCase()) {
+    switch (sortType) {
 
       case SortType.DAY:
         this.#tripPoints.sort(sortDayToMin);
