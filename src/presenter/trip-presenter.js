@@ -56,10 +56,6 @@ export default class TripPresenter {
         this.#tripPoints.sort(sortDayToMin);
         this.#currentSortType = SortType.DAY;
         break;
-      case SortType.EVENT:
-        this.#tripPoints.sort(sortDayToMin);
-        this.#currentSortType = SortType.EVENT;
-        break;
       case SortType.TIME:
         this.#tripPoints.sort(sortTimeToMin);
         this.#currentSortType = SortType.TIME;
@@ -67,10 +63,6 @@ export default class TripPresenter {
       case SortType.PRICE:
         this.#tripPoints.sort(sortPriceToMin);
         this.#currentSortType = SortType.PRICE;
-        break;
-      case SortType.OFFERS:
-        this.#tripPoints.sort(sortDayToMin);
-        this.#currentSortType = SortType.OFFERS;
         break;
       default:
         this.#tripPoints = [...this.#sourcedTripPoints];
