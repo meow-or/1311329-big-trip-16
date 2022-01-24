@@ -272,7 +272,16 @@ export default class NewPointView extends AbstractView {
     document.querySelector('.trip-main__event-add-btn').addEventListener('click', this.#createNewEventClickHandler);
   };
 
+  setCancelNewEventClickHandler = (callback) => {
+    this._callback.cancelNewEventClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#cancelNewEventClickHandler);
+  }
+
   #createNewEventClickHandler = () => {
     this._callback.createNewEventClick();
+  };
+
+  #cancelNewEventClickHandler = () => {
+    this._callback.cancelNewEventClick();
   };
 }

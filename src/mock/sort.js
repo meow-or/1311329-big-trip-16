@@ -1,6 +1,12 @@
-import { SortType } from '../const.js';
+const pointToSortMap = {
+  day: 'day',
+  event: 'event',
+  time: 'time',
+  price: 'price',
+  offers: 'offers',
+};
 
 export const generateSortFilter = () =>
-  Object.entries(SortType).map(([sortName]) => ({
-    name: sortName
+  Object.entries(pointToSortMap).map(([sortName]) => ({
+    name: sortName,
   }));

@@ -44,8 +44,6 @@ export default class PointPresenter {
     this.#pointEditComponent.setPointDeleteHandler(this.#handleDeletePointClick);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleEditFormSubmit);
 
-    this.#newPointComponent.setNewEventClickHandler(this.#handleNewEventClick);
-
     if (prevPointComponent === null || prevPointEditComponent === null || prevNewPointComponent === null) {
       render(this.#pointsContainer, this.#pointComponent, RenderPosition.BEFOREEND);
       return;
@@ -94,13 +92,19 @@ export default class PointPresenter {
     this.#mode = Mode.DEFAULT;
   };
 
-  #renderNewEventForm = () => {
-    //render(this.#pointsContainer, this.#newPointComponent, RenderPosition.BEFOREEND);
-    //replace(this.#newPointComponent, this.#pointComponent);
-    document.addEventListener('keydown', this.#onEscKeyDownHandler);
-    this.#changeMode();
-    this.#mode = Mode.CREATING;
-  }
+  // #replacePointToNewEventForm = () => {
+  //   replace(this.#newPointComponent, this.#pointComponent);
+  //   document.addEventListener('keydown', this.#onEscKeyDownHandler);
+  //   this.#changeMode();
+  //   this.#mode = Mode.CREATING;
+  // }
+
+  // #replaceEditFormToNewEventForm = () => {
+  //   replace(this.#newPointComponent, this.#pointEditComponent);
+  //   document.addEventListener('keydown', this.#onEscKeyDownHandler);
+  //   this.#changeMode();
+  //   this.#mode = Mode.CREATING;
+  // }
 
   #replaceNewEventFormToPoint = () => {
     replace(this.#pointComponent, this.#newPointComponent);
@@ -137,7 +141,7 @@ export default class PointPresenter {
     this.#replaceFormToPoint();
   };
 
-  #handleNewEventClick = () => {
-    this.#renderNewEventForm();
-  };
+  // #handleNewEventClick = () => {
+  //   this.#renderNewEventForm();
+  // };
 }

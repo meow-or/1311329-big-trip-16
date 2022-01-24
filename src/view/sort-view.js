@@ -1,5 +1,4 @@
 import AbstractView from './abstract-view.js';
-import { SortType } from '../const.js';
 
 const createSortItemTemplate = (filter, isChecked) => {
   const { name } = filter;
@@ -10,7 +9,7 @@ const createSortItemTemplate = (filter, isChecked) => {
         type="radio"
         name="trip-sort"
         value="sort-${name}"
-        data-sort-type="${SortType[name]}"
+        data-sort-type="${name}"
         ${isChecked ? 'checked' : ''}>
       <label class="trip-sort__btn" for="sort-${name}">${name}</label>
     </div>`;
