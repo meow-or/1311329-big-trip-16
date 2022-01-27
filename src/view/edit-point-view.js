@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
+import { getRandomInteger } from '../utils/common.js';
 import { TYPES, CITIES, dateFormat, BLANK_POINT } from '../const.js';
-import AbstractView from './abstract-view.js';
+import SmartView from './smart-view.js';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import { closeFormBtnClass, deletePointBtnClass } from '../const.js';
 
 let offersHeaderClass;
@@ -82,7 +85,7 @@ const createEventTypeTemplate = (type) =>
         type="radio"
         name="event-type"
         value="${pointType}"
-        ${type === pointType ? 'checked' : ''}>
+        ${pointType === type ? 'checked' : ''}>
 
       <label
         class="event__type-label  event__type-label--${pointType}"
@@ -90,7 +93,7 @@ const createEventTypeTemplate = (type) =>
       </label>
     </div>`).join('');
 
-const createOffersTemplate = (offers, isOfferChecked) => {
+const createOffersTemplate = (offers) => {
   if (offers.length === 0) {
     offersHeaderClass = 'visually-hidden';
 
@@ -107,8 +110,8 @@ const createOffersTemplate = (offers, isOfferChecked) => {
             <input class="event__offer-checkbox  visually-hidden"
             id="event-offer-${offer.title}-1"
             type="checkbox"
-            name="event-offer-${offer.title}"
-            ${isOfferChecked ? 'checked' : ''}>
+            name="event-offer-${offer.title}
+          ">
 
             <label class="event__offer-label"
               for="event-offer-${offer.title}-1">
@@ -125,52 +128,8 @@ const createDestinationDescriptionTemplate = (destination) => (
 );
 
 const createEditPointTemplate = (data) => {
-  const {
-    basePrice = 1,
-    dateFrom = 1000000,
-    dateTo = 1000000,
-    destination = {
-      description: 'Nunc fermentum tortor ac porta',
-      name: 'Paris',
-      pictures: [
-        {
-          src: 'img/photos/1.jpg',
-          description: 'some description',
-        },
-        {
-          src: 'img/photos/2.jpg',
-          description: 'awesome description',
-        },
-        {
-          src: 'img/photos/3.jpg',
-          description: 'a little bit of description',
-        },
-        {
-          src: 'img/photos/4.jpg',
-          description: 'just description',
-        },
-        {
-          src: 'img/photos/5.jpg',
-          description: 'simple description',
-        },
-      ],
-    },
-    offers = [
-      {
-        id: 1,
-        title: 'pelmeni',
-        price: 25,
-      },
-      {
-        id: 2,
-        title: 'vodka',
-        price: 5,
-      },
-    ],
-    type = 'restaurant',
-    isOfferChecked
-  } = data;
-
+  const { basePrice, dateFrom, dateTo, destination, offers, type } = data;
+  //console.log(data);
   const chooseDestinationTemplate = createChooseDestinationTemplate(destination);
   const destinationListTemplate = createDestinationListTemplate(destination);
   const dateTemplate = createEditPointDateTemplate(dateFrom, dateTo);
@@ -178,7 +137,7 @@ const createEditPointTemplate = (data) => {
   const eventTypeTemplate = createEventTypeTemplate(type);
   const currentTypeTemplate = createCurrentPointTypeTemplate(type);
   const typeIconTemplate = createTypeIconTemplate(type);
-  const offersTemplate = createOffersTemplate(offers, isOfferChecked);
+  const offersTemplate = createOffersTemplate(offers);
   const destinationDescriptionTemplate = createDestinationDescriptionTemplate(destination);
 
   return (
@@ -238,38 +197,153 @@ const createEditPointTemplate = (data) => {
     </li>`
   );
 };
-export default class EditPointView extends AbstractView {
+export default class EditPointView extends SmartView {
+  #dateFromPicker = null;
+  #dateToPicker = null;
+
   constructor(point = BLANK_POINT) {
     super();
     this._data = EditPointView.parsePointToData(point);
+
+    this.#setInnerHandlers();
+    this.#setDateFromPicker();
+    this.#setDateToPicker();
   }
 
   get template() {
     return createEditPointTemplate(this._data);
   }
 
-  
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#dateFromPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateFromPicker = null;
+    }
+
+    if (this.#dateToPicker) {
+      this.#dateToPicker.destroy();
+      this.#dateToPicker = null;
+    }
+  }
+
+  reset = (point) => {
+    this.updateData(
+      EditPointView.parsePointToData(point)
+    );
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.#setDateFromPicker();
+    this.#setDateToPicker();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  };
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
-    this.element
-      .querySelector('form')
-      .addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   };
 
   setFormCloseHandler = (callback) => {
     this._callback.formClose = callback;
-    this.element
-      .querySelector(closeFormBtnClass)
-      .addEventListener('click', this.#closeFormHandler);
+    this.element.querySelector(closeFormBtnClass).addEventListener('click', this.#closeFormHandler);
   };
 
   setPointDeleteHandler = (callback) => {
     this._callback.pointDelete = callback;
-    this.element
-      .querySelector(deletePointBtnClass)
-      .addEventListener('click', this.#deletePointHandler);
+    this.element.querySelector(deletePointBtnClass).addEventListener('click', this.#deletePointHandler);
   };
+
+  #setDateFromPicker = () => {
+    this.#dateFromPicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/Y H:i',
+        defaultDate: this._data.dateFrom,
+        onClose: this.#dateFromClickHandler,
+      }
+    );
+  }
+
+  #setDateToPicker = () => {
+    this.#dateToPicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/Y H:i',
+        defaultDate: this._data.dateTo,
+        onClose: this.#dateToClickHandler,
+      }
+    );
+  }
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationInputHandler);
+
+    this.element.querySelectorAll('.event__type-input')
+      .forEach((input) => input.addEventListener('change', this.#typeChangeHandler));
+
+    this.element.querySelector('#event-start-time-1').addEventListener('input', this.#dateFromChangeHandler);
+    this.element.querySelector('#event-end-time-1').addEventListener('input', this.#dateToChangeHandler);
+  };
+
+  #priceInputHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      basePrice: evt.target.value,
+    }, true);
+  }
+
+  #dateFromChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      dateFrom: evt.target.value,
+    }, true);
+  }
+
+  #dateToChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      dateTo: evt.target.value,
+    }, true);
+  }
+
+  #destinationInputHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      destination: {
+        name: evt.target.value
+      },
+    }, true);
+  }
+
+  #dateFromClickHandler = ([userDateFrom]) => {
+    this.updateData({
+      dateFrom: userDateFrom
+    });
+  }
+
+  #dateToClickHandler = ([userDateTo]) => {
+    this.updateData({
+      dateTo: userDateTo
+    });
+  }
+
+  #typeChangeHandler = (evt) => {
+    evt.preventDefault();
+
+    this.updateData({
+      type: evt.target.value,
+    }, true);
+
+    this.element.querySelector('.event__type-output').textContent = evt.target.value;
+    this.element.querySelector('.event__type-icon').setAttribute('src', `img/icons/${evt.target.value}.png`);
+  }
+
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
@@ -284,19 +358,20 @@ export default class EditPointView extends AbstractView {
     this._callback.pointDelete();
   };
 
-  static parsePointToData = (point) => ({...point,
-    isOfferChecked: point.offers !== null,
+  static parsePointToData = (point) => ({
+    ...point,
+    // isTypeChanged: point.type !== null,
   });
 
   static parseDataToPoint = (data) => {
-    const point = {...data};
+    const point = { ...data };
 
-    if (!point.isOfferChecked) {
-      point.offers = null;
-    }
+    // if (!point.isTypeChanged) {
+    //   point.type = null;
+    // }
 
-    delete point.isOfferChecked;
+    // delete point.isTypeChanged;
 
     return point;
-  }
+  };
 }

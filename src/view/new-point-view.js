@@ -173,11 +173,13 @@ const createNewPointTemplate = (point = {}) => {
         id: 1,
         title: 'pelmeni',
         price: 25,
+        selection: false
       },
       {
         id: 2,
         title: 'vodka',
         price: 5,
+        selection: false
       },
     ],
     type = 'restaurant',

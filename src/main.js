@@ -26,3 +26,4 @@ render(siteNavigationElement, new SiteMenuView(), RenderPosition.BEFOREEND);
 render(filtersContainer, filtersComponent, RenderPosition.BEFOREEND);
 
 tripBoardPresenter.init(points);
+
