@@ -1,18 +1,16 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils/common.js';
 import { TYPES, CITIES, dateFormat, BLANK_POINT } from '../const.js';
-import { DESTINATIONS } from '../mock/destination.js';
-import { OPTIONS } from '../mock/offers.js';
 import AbstractView from './abstract-view.js';
 
 let offersHeaderClass;
 
-const createChooseDestinationTemplate = (city) => (
+const createChooseDestinationTemplate = (destination) => (
   `<input class="event__input  event__input--destination"
     id="event-destination-1"
     type="text"
     name="event-destination"
-    value="${city}"
+    value="${destination.name}"
     list="destination-list-1"
   >`
 );
@@ -141,24 +139,62 @@ const createDestinationPhotoTemplate = (destination) => {
 
 const createNewPointTemplate = (point = {}) => {
   const {
-    basePrice = 0,
+    basePrice = 1,
     dateFrom = 1000000,
     dateTo = 1000000,
-    destination = 'Paris',
-    offers = OPTIONS['restaurant'].offers,
+    destination = {
+      description: 'Nunc fermentum tortor ac porta',
+      name: 'Paris',
+      pictures: [
+        {
+          src: 'img/photos/1.jpg',
+          description: 'some description',
+        },
+        {
+          src: 'img/photos/2.jpg',
+          description: 'awesome description',
+        },
+        {
+          src: 'img/photos/3.jpg',
+          description: 'a little bit of description',
+        },
+        {
+          src: 'img/photos/4.jpg',
+          description: 'just description',
+        },
+        {
+          src: 'img/photos/5.jpg',
+          description: 'simple description',
+        },
+      ],
+    },
+    offers = [
+      {
+        id: 1,
+        title: 'pelmeni',
+        price: 25,
+        selection: false
+      },
+      {
+        id: 2,
+        title: 'vodka',
+        price: 5,
+        selection: false
+      },
+    ],
     type = 'restaurant',
   } = point;
 
-  const chooseDestinationTemplate = createChooseDestinationTemplate(DESTINATIONS['Paris'].name);
-  const destinationListTemplate = createDestinationListTemplate();
+  const chooseDestinationTemplate = createChooseDestinationTemplate(destination);
+  const destinationListTemplate = createDestinationListTemplate(destination);
   const dateTemplate = createEditPointDateTemplate(dateFrom, dateTo);
   const priceTemplate = createPriceTemplate(basePrice);
   const eventTypeTemplate = createEventTypeTemplate(type);
   const currentTypeTemplate = createCurrentPointTypeTemplate(type);
-  const typeIconTemplate = createTypeIconTemplate(OPTIONS['restaurant'].type);
-  const offersTemplate = createOffersTemplate(OPTIONS['restaurant'].offers);
-  const destinationDescriptionTemplate = createDestinationDescriptionTemplate(DESTINATIONS['Paris'].description);
-  const destinationPhotoTemplate = createDestinationPhotoTemplate(DESTINATIONS['Paris']);
+  const typeIconTemplate = createTypeIconTemplate(type);
+  const offersTemplate = createOffersTemplate(offers);
+  const destinationDescriptionTemplate = createDestinationDescriptionTemplate(destination);
+  const destinationPhotoTemplate = createDestinationPhotoTemplate(destination);
 
   return (
     `<li class="trip-events__item">

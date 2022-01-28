@@ -1,28 +1,26 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract-view.js';
 import { editPointBtnClass } from '../const.js';
-import { OPTIONS } from '../mock/offers.js';
-import { DESTINATIONS } from '../mock/destination.js';
 
 const HOUR = 3600000;
 const DAY = 86400000;
 
-const createPointOfferTemplate = (options) => {
-  if (options.length === 0) {
+const createPointOfferTemplate = (offers) => {
+  if (offers.length === 0) {
     return '';
 
   } else {
-    return options.map(
-      (option) => `<li class="event__offer">
-                    <span class="event__offer-title">${option.title}</span>
+    return offers.map(
+      (offer) => `<li class="event__offer">
+                    <span class="event__offer-title">${offer.title}</span>
                     &plus;&euro;&nbsp;
-                    <span class="event__offer-price">${option.price}</span>
+                    <span class="event__offer-price">${offer.price}</span>
                   </li>`).join('');
   }
 };
 
 const createTripPointTemplate = (point) => {
-  const { basePrice, dateFrom, dateTo, destination, isFavorite, type } = point;
+  const { basePrice, dateFrom, dateTo, destination, isFavorite, offers, type } = point;
 
   const dateStart = dayjs(dateFrom).format('D MMM');
 
@@ -57,7 +55,7 @@ const createTripPointTemplate = (point) => {
     ?  '--active'
     :  '';
 
-  const pointOfferTemplate = createPointOfferTemplate(OPTIONS[type].offers);
+  const pointOfferTemplate = createPointOfferTemplate(offers);
 
   return (
     `<li class="trip-events__item">
@@ -66,7 +64,7 @@ const createTripPointTemplate = (point) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} ${DESTINATIONS[destination].name}</h3>
+        <h3 class="event__title">${type} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${datetimeStartAttr}">${dateStartTime}</time>
