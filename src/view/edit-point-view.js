@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { getRandomInteger } from '../utils/common.js';
 import { TYPES, CITIES, dateFormat, BLANK_POINT } from '../const.js';
 import SmartView from './smart-view.js';
 import flatpickr from 'flatpickr';
@@ -129,7 +128,7 @@ const createDestinationDescriptionTemplate = (destination) => (
 
 const createEditPointTemplate = (data) => {
   const { basePrice, dateFrom, dateTo, destination, offers, type } = data;
-  //console.log(data);
+  console.log(offers);
   const chooseDestinationTemplate = createChooseDestinationTemplate(destination);
   const destinationListTemplate = createDestinationListTemplate(destination);
   const dateTemplate = createEditPointDateTemplate(dateFrom, dateTo);
