@@ -110,21 +110,6 @@ const OPTIONS = [
     offers: [
       {
         id: 1,
-        title: 'econom',
-        price: 300,
-      },
-      {
-        id: 2,
-        title: 'business class',
-        price: 500,
-      },
-    ],
-  },
-  {
-    type: 'flight',
-    offers: [
-      {
-        id: 1,
         title: 'ты не понял, мы domoi letim, vodo4ki nam prinesi',
         price: 300,
       },
