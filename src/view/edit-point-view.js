@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
-import { getRandomInteger } from '../utils/common.js';
 import { TYPES, CITIES, dateFormat, BLANK_POINT } from '../const.js';
+import { OPTIONS } from '../mock/offers.js';
+import { DESTINATIONS } from '../mock/destination.js';
 import SmartView from './smart-view.js';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -8,12 +9,12 @@ import { closeFormBtnClass, deletePointBtnClass } from '../const.js';
 
 let offersHeaderClass;
 
-const createChooseDestinationTemplate = (destination) => (
+const createChooseDestinationTemplate = (city) => (
   `<input class="event__input  event__input--destination"
     id="event-destination-1"
     type="text"
     name="event-destination"
-    value="${destination.name}"
+    value="${city}"
     list="destination-list-1"
   >`
 );
@@ -93,8 +94,8 @@ const createEventTypeTemplate = (type) =>
       </label>
     </div>`).join('');
 
-const createOffersTemplate = (offers) => {
-  if (offers.length === 0) {
+const createOffersTemplate = (arr) => {
+  if (arr.length === 0) {
     offersHeaderClass = 'visually-hidden';
 
     return (
@@ -104,41 +105,42 @@ const createOffersTemplate = (offers) => {
   } else {
     offersHeaderClass = '';
 
-    return offers.map(
-      (offer) =>
+    return arr.map(
+      (item) =>
         `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden"
-            id="event-offer-${offer.title}-1"
+            id="event-offer-${item.title}-1"
             type="checkbox"
-            name="event-offer-${offer.title}
+            name="event-offer-${item.title}
           ">
 
             <label class="event__offer-label"
-              for="event-offer-${offer.title}-1">
-              <span class="event__offer-title">${offer.title}</span>
+              for="event-offer-${item.title}-1">
+              <span class="event__offer-title">${item.title}</span>
                 &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offer.price}</span>
+              <span class="event__offer-price">${item.price}</span>
             </label>
           </div>`).join('');
   }
 };
 
 const createDestinationDescriptionTemplate = (destination) => (
-  `<p class="event__destination-description">${destination.description}</p>`
+  `<p class="event__destination-description">${destination}</p>`
 );
 
 const createEditPointTemplate = (data) => {
-  const { basePrice, dateFrom, dateTo, destination, offers, type } = data;
-  //console.log(data);
-  const chooseDestinationTemplate = createChooseDestinationTemplate(destination);
-  const destinationListTemplate = createDestinationListTemplate(destination);
+
+  const { basePrice, dateFrom, dateTo, destination, type } = data;
+
+  const chooseDestinationTemplate = createChooseDestinationTemplate(DESTINATIONS[destination].name);
+  const destinationListTemplate = createDestinationListTemplate();
   const dateTemplate = createEditPointDateTemplate(dateFrom, dateTo);
   const priceTemplate = createPriceTemplate(basePrice);
   const eventTypeTemplate = createEventTypeTemplate(type);
   const currentTypeTemplate = createCurrentPointTypeTemplate(type);
   const typeIconTemplate = createTypeIconTemplate(type);
-  const offersTemplate = createOffersTemplate(offers);
-  const destinationDescriptionTemplate = createDestinationDescriptionTemplate(destination);
+  const offersTemplate = createOffersTemplate(OPTIONS[type].offers);
+  const destinationDescriptionTemplate = createDestinationDescriptionTemplate(DESTINATIONS[destination].description);
 
   return (
     `<li class="trip-events__item">
@@ -315,9 +317,7 @@ export default class EditPointView extends SmartView {
   #destinationInputHandler = (evt) => {
     evt.preventDefault();
     this.updateData({
-      destination: {
-        name: evt.target.value
-      },
+      destination:  evt.target.value
     }, true);
   }
 
@@ -360,7 +360,7 @@ export default class EditPointView extends SmartView {
 
   static parsePointToData = (point) => ({
     ...point,
-    // isTypeChanged: point.type !== null,
+    //isTypeChanged: point.type !== null,
   });
 
   static parseDataToPoint = (data) => {
