@@ -49,13 +49,18 @@ const OPTIONS = [
     offers: [
       {
         id: 1,
-        title: 'tea in a faceted glass',
-        price: 1,
+        title: 'Luxury',
+        price: 75,
       },
       {
         id: 2,
-        title: 'linen',
+        title: 'double-decker',
         price: 3,
+      },
+      {
+        id: 3,
+        title: 'Luggage',
+        price: 6,
       },
     ],
   },
@@ -64,13 +69,13 @@ const OPTIONS = [
     offers: [
       {
         id: 1,
-        title: 'Compartment',
-        price: 50,
+        title: 'tea in a faceted glass',
+        price: 1,
       },
       {
         id: 2,
-        title: 'Luxury',
-        price: 75,
+        title: 'Compartment',
+        price: 50,
       },
       {
         id: 3,

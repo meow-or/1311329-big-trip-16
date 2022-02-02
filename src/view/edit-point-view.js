@@ -92,8 +92,8 @@ const createEventTypeTemplate = (type) =>
       </label>
     </div>`).join('');
 
-const createOffersTemplate = (offers) => {
-  if (offers.length === 0) {
+const createOffersTemplate = (tripoffers) => {
+  if (tripoffers.length === 0) {
     offersHeaderClass = 'visually-hidden';
 
     return (
@@ -103,14 +103,14 @@ const createOffersTemplate = (offers) => {
   } else {
     offersHeaderClass = '';
 
-    return offers.map(
+    return tripoffers.map(
       (offer) =>
         `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden"
             id="event-offer-${offer.title}-1"
             type="checkbox"
-            name="event-offer-${offer.title}
-          ">
+            name="event-offer-${offer.title}"
+          >
 
             <label class="event__offer-label"
               for="event-offer-${offer.title}-1">
@@ -126,9 +126,21 @@ const createDestinationDescriptionTemplate = (destination) => (
   `<p class="event__destination-description">${destination.description}</p>`
 );
 
+const createDestinationPhotoTemplate = (destination) => {
+  const { pictures } = destination;
+
+  return pictures.map(
+    (picture) =>
+      `<img class="event__photo"
+        src="${picture.src}"
+        alt="${picture.description}">
+      </img>`).join('');
+};
+
 const createEditPointTemplate = (data) => {
   const { basePrice, dateFrom, dateTo, destination, offers, type } = data;
-  console.log(offers);
+
+
   const chooseDestinationTemplate = createChooseDestinationTemplate(destination);
   const destinationListTemplate = createDestinationListTemplate(destination);
   const dateTemplate = createEditPointDateTemplate(dateFrom, dateTo);
@@ -138,6 +150,7 @@ const createEditPointTemplate = (data) => {
   const typeIconTemplate = createTypeIconTemplate(type);
   const offersTemplate = createOffersTemplate(offers);
   const destinationDescriptionTemplate = createDestinationDescriptionTemplate(destination);
+  const destinationPhotoTemplate = createDestinationPhotoTemplate(destination);
 
   return (
     `<li class="trip-events__item">
@@ -190,6 +203,11 @@ const createEditPointTemplate = (data) => {
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
             ${destinationDescriptionTemplate}
+            <div class="event__photos-container">
+              <div class="event__photos-tape">
+                ${destinationPhotoTemplate}
+              </div>
+            </div>
           </section>
         </section>
       </form>
@@ -200,13 +218,18 @@ export default class EditPointView extends SmartView {
   #dateFromPicker = null;
   #dateToPicker = null;
 
-  constructor(point = BLANK_POINT) {
+  constructor(point = BLANK_POINT, tripDestinations, tripPointOffers) {
     super();
-    this._data = EditPointView.parsePointToData(point);
+    this._data = EditPointView.parsePointToData(point, tripDestinations, tripPointOffers);
+    this._tripDestinations = tripDestinations;
+    this._tripPointOffers = tripPointOffers;
 
     this.#setInnerHandlers();
     this.#setDateFromPicker();
     this.#setDateToPicker();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormCloseHandler(this._callback.formClose);
+    this.setPointDeleteHandler(this._callback.pointDelete);
   }
 
   get template() {
@@ -227,9 +250,9 @@ export default class EditPointView extends SmartView {
     }
   }
 
-  reset = (point) => {
+  reset = (point, tripDestinations, tripPointOffers) => {
     this.updateData(
-      EditPointView.parsePointToData(point)
+      EditPointView.parsePointToData(point, tripDestinations, tripPointOffers)
     );
   }
 
@@ -238,6 +261,8 @@ export default class EditPointView extends SmartView {
     this.#setDateFromPicker();
     this.#setDateToPicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormCloseHandler(this._callback.formClose);
+    this.setPointDeleteHandler(this._callback.pointDelete);
   };
 
   setFormSubmitHandler = (callback) => {
@@ -262,7 +287,7 @@ export default class EditPointView extends SmartView {
         enableTime: true,
         dateFormat: 'd/m/Y H:i',
         defaultDate: this._data.dateFrom,
-        onClose: this.#dateFromClickHandler,
+        onChange: this.#dateFromClickHandler,
       }
     );
   }
@@ -274,7 +299,7 @@ export default class EditPointView extends SmartView {
         enableTime: true,
         dateFormat: 'd/m/Y H:i',
         defaultDate: this._data.dateTo,
-        onClose: this.#dateToClickHandler,
+        onChange: this.#dateToClickHandler,
       }
     );
   }
@@ -282,9 +307,13 @@ export default class EditPointView extends SmartView {
   #setInnerHandlers = () => {
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationInputHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
 
     this.element.querySelectorAll('.event__type-input')
       .forEach((input) => input.addEventListener('change', this.#typeChangeHandler));
+
+    this.element.querySelectorAll('.event__offer-checkbox')
+      .forEach((input) => input.addEventListener('change', this.#onChooseOfferHandler));
 
     this.element.querySelector('#event-start-time-1').addEventListener('input', this.#dateFromChangeHandler);
     this.element.querySelector('#event-end-time-1').addEventListener('input', this.#dateToChangeHandler);
@@ -313,6 +342,7 @@ export default class EditPointView extends SmartView {
 
   #destinationInputHandler = (evt) => {
     evt.preventDefault();
+
     this.updateData({
       destination: {
         name: evt.target.value
@@ -320,27 +350,75 @@ export default class EditPointView extends SmartView {
     }, true);
   }
 
+  #destinationChangeHandler = (evt) => {
+    evt.preventDefault();
+
+    const destinationByName = this._tripDestinations.reduce((result, tripDestination) => {
+      result[tripDestination.name] = {
+        tripDescription: tripDestination.description,
+        tripPictures: tripDestination.pictures,
+        tripName: tripDestination.name
+      };
+
+      return result;
+    }, {});
+
+    const currentDestination = destinationByName[evt.target.value];
+
+    this.updateData({
+      destination: {
+        description: currentDestination.tripDescription,
+        name: currentDestination.tripName,
+        pictures: currentDestination.tripPictures,
+      },
+    }, false);
+  }
+
   #dateFromClickHandler = ([userDateFrom]) => {
     this.updateData({
       dateFrom: userDateFrom
-    });
+    }, true);
   }
 
   #dateToClickHandler = ([userDateTo]) => {
     this.updateData({
       dateTo: userDateTo
-    });
+    }, true);
   }
 
   #typeChangeHandler = (evt) => {
     evt.preventDefault();
 
+    const offersByType = this._tripPointOffers.reduce((result, pointOffer) => {
+      result[pointOffer.type] = {
+        pointType: pointOffer.type,
+        pointOffers: pointOffer.offers
+      };
+
+      return result;
+    }, {});
+
     this.updateData({
       type: evt.target.value,
-    }, true);
+      offers: offersByType[evt.target.value].pointOffers,
+
+    }, false);
 
     this.element.querySelector('.event__type-output').textContent = evt.target.value;
     this.element.querySelector('.event__type-icon').setAttribute('src', `img/icons/${evt.target.value}.png`);
+  }
+
+  #onChooseOfferHandler = (evt) => {
+    const offersByTitle = this._tripPointOffers.find((obj) => obj.offers.find((offer) => `event-offer-${offer.title}` === evt.target.name));
+
+    const clickedOffer = offersByTitle.offers.find((offer) => `event-offer-${offer.title}` === evt.target.name);
+
+    const offersWithoutClickedOffer = offersByTitle.offers.filter((offer) => offer !== clickedOffer);
+
+    this.updateData({
+      offers: offersWithoutClickedOffer
+
+    }, false);
   }
 
 
@@ -357,19 +435,12 @@ export default class EditPointView extends SmartView {
     this._callback.pointDelete();
   };
 
-  static parsePointToData = (point) => ({
-    ...point,
-    // isTypeChanged: point.type !== null,
+  static parsePointToData = (point, tripDestinations, tripPointOffers) => ({
+    ...point, tripDestinations, tripPointOffers
   });
 
   static parseDataToPoint = (data) => {
     const point = { ...data };
-
-    // if (!point.isTypeChanged) {
-    //   point.type = null;
-    // }
-
-    // delete point.isTypeChanged;
 
     return point;
   };

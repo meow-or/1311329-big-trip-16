@@ -3,9 +3,8 @@ import PointsContainerView from '../view/points-container-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import SortView from '../view/sort-view.js';
 import PointPresenter from './point-presenter.js';
-import NewPointView from '../view/new-point-view.js';
 import { updateItem } from '../utils/common.js';
-import { render, RenderPosition, remove } from '../utils/render.js';
+import { render, RenderPosition } from '../utils/render.js';
 import { sortDayToMin, sortPriceToMin, sortTimeToMin } from '../utils/point.js';
 import { SortType } from '../const.js';
 
@@ -19,9 +18,9 @@ export default class TripPresenter {
 
   #tripBoardComponent = new TripBoardView();
   #pointsContainerComponent = new PointsContainerView();
-  #newPointComponent = new NewPointView();
 
   #tripPoints = [];
+
   #pointPresenter = new Map();
   #currentSortType = null;
   #sourcedTripPoints = [];
@@ -34,18 +33,12 @@ export default class TripPresenter {
 
   init = (tripPoints) => {
     this.#tripPoints = [...tripPoints];
+
     this.#sourcedTripPoints = this.#tripPoints.sort(sortDayToMin);
 
-    render(
-      this.#tripBoardContainer,
-      this.#tripBoardComponent,
-      RenderPosition.BEFOREEND
-    );
+    render(this.#tripBoardContainer, this.#tripBoardComponent, RenderPosition.BEFOREEND);
 
     this.#renderTripBoard();
-
-    this.#newPointComponent.setNewEventClickHandler(this.#handleNewEventClick);
-    this.#newPointComponent.setCancelNewEventClickHandler(this.#handleCancelNewEventClick);
   };
 
   #handleModeChange = () => {
@@ -95,14 +88,6 @@ export default class TripPresenter {
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   };
 
-  #handleNewEventClick = () => {
-    render(this.#pointsContainerComponent, this.#newPointComponent, RenderPosition.AFTERBEGIN);
-  };
-
-  #handleCancelNewEventClick = () => {
-    remove(this.#newPointComponent);
-  }
-
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(
       this.#pointsContainerComponent,
@@ -120,11 +105,7 @@ export default class TripPresenter {
   };
 
   #renderNoPoints = () => {
-    render(
-      this.#tripBoardComponent,
-      new EmptyListView(this.#filterInputs),
-      RenderPosition.BEFOREEND
-    );
+    render(this.#tripBoardComponent, new EmptyListView(this.#filterInputs), RenderPosition.BEFOREEND);
   };
 
   #clearPointList = () => {
@@ -133,11 +114,7 @@ export default class TripPresenter {
   };
 
   #renderPointsContainer = () => {
-    render(
-      this.#tripBoardComponent,
-      this.#pointsContainerComponent,
-      RenderPosition.BEFOREEND
-    );
+    render(this.#tripBoardComponent, this.#pointsContainerComponent, RenderPosition.BEFOREEND);
   };
 
   #renderTripBoard = () => {
